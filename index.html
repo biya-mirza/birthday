@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f9d423, #ff4e50);
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff4e50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #countdown {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                width: 100%;
+            }
+
+            #countdown {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Birthday Countdown</h1>
+        <p>Enter your birthdate to start the countdown to your next birthday.</p>
+        <input type="date" id="birthdate" />
+        <br />
+        <button onclick="startCountdown()">Start Countdown</button>
+        <div id="countdown"></div>
+    </div>
+
+    <script>
+        function startCountdown() {
+            const birthdateInput = document.getElementById("birthdate").value;
+            const birthdate = new Date(birthdateInput);
+            if (!birthdateInput) {
+                alert("Please enter a valid birthdate.");
+                return;
+            }
+            
+            const today = new Date();
+            let nextBirthday = new Date(today.getFullYear(), birthdate.getMonth(), birthdate.getDate());
+
+            // If the birthday for this year has already passed, set it for the next year
+            if (today > nextBirthday) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+
+            const countdownElement = document.getElementById("countdown");
+
+            const updateCountdown = () => {
+                const now = new Date();
+                const timeDiff = nextBirthday - now;
+
+                if (timeDiff <= 0) {
+                    countdownElement.innerHTML = "Happy Birthday!";
+                    clearInterval(intervalId);
+                    return;
+                }
+
+                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `Your next birthday is in ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`;
+            };
+
+            updateCountdown(); // Update immediately
+            const intervalId = setInterval(updateCountdown, 1000); // Update every second
+        }
+    </script>
+</body>
+</html>
